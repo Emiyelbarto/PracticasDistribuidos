@@ -3,6 +3,7 @@ package com.escom.relojmaestro;
 import javax.swing.*;
 
 public class Hilo extends Thread{
+    private InterfazModificar ventanaModificar = null;
     private int threadID;
     private final JLabel indicador;
     private int estado = 0;
@@ -28,6 +29,14 @@ public class Hilo extends Thread{
                         actualizarHora();
                         break;
                     case 1:
+                        if (ventanaModificar == null)  {
+                            ventanaModificar = new InterfazModificar(threadID, this.indicador.getText());
+                        }
+                        
+                        if (ventanaModificar.isFinalizo()) {
+                            this.indicador.setText(ventanaModificar.getNuevaHora());
+                            this.estado = 0;
+                        }
                         break;
                     case 2:
                         break;
