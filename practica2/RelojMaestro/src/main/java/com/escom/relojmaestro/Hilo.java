@@ -32,7 +32,8 @@ public class Hilo extends Thread{
                         if (ventanaModificar == null)  {
                             ventanaModificar = new InterfazModificar(threadID, this.indicador.getText());
                         }
-                        
+                        System.out.println("ventanaModificar.isFinalizo() = " + ventanaModificar.isFinalizo());
+                        System.out.println("ventanaModificar.getNuevaHora() = " + ventanaModificar.getNuevaHora());
                         if (ventanaModificar.isFinalizo()) {
                             this.indicador.setText(ventanaModificar.getNuevaHora());
                             this.estado = 0;
