@@ -1,5 +1,7 @@
 package com.escom.relojmaestro;
 
+import com.escom.sockets.Servidor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,6 +17,7 @@ public class InterfazMaestra extends JFrame{
     private JButton enviar_1, enviar_2, enviar_3;
 
     private Hilo hilo_1, hilo_2, hilo_3;
+    private Servidor servidor;
 
     public InterfazMaestra(){
         this.setSize(1000,300);
@@ -24,11 +27,14 @@ public class InterfazMaestra extends JFrame{
 
         construirElementos();
 
-        this.hilo_1 = new Hilo(0, this.reloj_1);
+        this.servidor = new Servidor();
+        this.servidor.start();
+
+        this.hilo_1 = new Hilo(0, this.reloj_1, this.servidor);
         this.hilo_1.start();
-        this.hilo_2 = new Hilo(1, this.reloj_2);
+        this.hilo_2 = new Hilo(1, this.reloj_2, this.servidor);
         this.hilo_2.start();
-        this.hilo_3 = new Hilo(2, this.reloj_3);
+        this.hilo_3 = new Hilo(2, this.reloj_3, this.servidor);
         this.hilo_3.start();
 
         this.setVisible(true);
@@ -79,6 +85,13 @@ public class InterfazMaestra extends JFrame{
 
         enviar_1 = new JButton("Enviar");
         enviar_1.setBounds(270,200,80,20);
+        enviar_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hilo_1.setEstado(2);
+            }
+        });
+
         panel.add(enviar_1);
 
 
@@ -106,6 +119,12 @@ public class InterfazMaestra extends JFrame{
 
         enviar_2 = new JButton("Enviar");
         enviar_2.setBounds(520,200,80,20);
+        enviar_2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hilo_2.setEstado(2);
+            }
+        });
         panel.add(enviar_2);
 
         //Tercer reloj
@@ -132,6 +151,12 @@ public class InterfazMaestra extends JFrame{
 
         enviar_3 = new JButton("Enviar");
         enviar_3.setBounds(770,200,80,20);
+        enviar_3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                hilo_3.setEstado(2);
+            }
+        });
         panel.add(enviar_3);
     }
 }
