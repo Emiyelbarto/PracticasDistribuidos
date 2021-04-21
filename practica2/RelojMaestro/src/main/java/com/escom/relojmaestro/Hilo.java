@@ -1,11 +1,15 @@
 package com.escom.relojmaestro;
 
+import com.escom.sockets.Servidor;
+
 import javax.swing.*;
 
 public class Hilo extends Thread{
+    private InterfazModificar ventanaModificar = null;
     private int threadID;
     private final JLabel indicador;
     private int estado = 0;
+    private Servidor refServidor;
 
     /*
     * Estado -> 0   =   Avanza el reloj
@@ -14,7 +18,8 @@ public class Hilo extends Thread{
     * */
 
     
-    public Hilo(int id, JLabel indicador){
+    public Hilo(int id, JLabel indicador, Servidor servidor){
+        this.refServidor = servidor;
         this.threadID = id;
         this.indicador = indicador;
     }
@@ -26,10 +31,24 @@ public class Hilo extends Thread{
                     case 0:
                         sleep(1000);
                         actualizarHora();
+                        if (!refServidor.clienteCreado(threadID)) {
+                            refServidor.setHoraActual(threadID, indicador.getText());
+                        }
                         break;
                     case 1:
+                        if (ventanaModificar == null)  {
+                            ventanaModificar = new InterfazModificar(threadID, this.indicador.getText());
+                        }
+                        System.out.println("ventanaModificar.isFinalizo() = " + ventanaModificar.isFinalizo());
+                        System.out.println("ventanaModificar.getNuevaHora() = " + ventanaModificar.getNuevaHora());
+                        if (ventanaModificar.isFinalizo()) {
+                            this.indicador.setText(ventanaModificar.getNuevaHora());
+                            this.estado = 0;
+                        }
                         break;
                     case 2:
+                        refServidor.solicitarMensaje(threadID,indicador.getText());
+                        this.estado = 0;
                         break;
                 }
             } catch (InterruptedException e) {
